@@ -1,2 +1,9 @@
 Flask<1
 passlib
+flask-wtf
+wtforms
+flask_sqlalchemy
+flask_marshmallow
+marshmallow-sqlalchemy
+requests
+mysqlclient

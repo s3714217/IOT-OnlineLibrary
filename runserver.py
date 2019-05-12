@@ -3,7 +3,7 @@ This script runs the admin_dashboard application using a development server.
 """
 
 from os import environ
-import admin_dashboard
+from admin_dashboard import app
 
 if __name__ == '__main__':
     HOST = environ.get('SERVER_HOST', 'localhost')

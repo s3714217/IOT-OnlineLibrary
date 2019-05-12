@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>{{ title }}.</h2>
+    <h3>{{ message }}</h3>
+
+    <div class=container"><br>
+        <div class="row align-items-center justify-content-center">
+            <div class="col-md-4">
+                <form action="" method="post" role="form">
+                    {{ form.csrf }}
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Your username.">
+                        <br>
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter a password.">
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+                <br>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if "Error" not in message[1]: %}
+                                <div class="alert alert-info">
+                                    <strong>Success! </strong> {{ message[1] }}
+                                </div>
+                            {% endif %}
+                            {% if "Error" in message[1]: %}
+                                <div class="alert alert-danger">
+                                    <strong>Error: </strong> {{ message[1] }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <br>
+        </div>
+    </div>
+    {#    <form>#}
+    {#        <div class="form-group">#}
+    {#            <label for="username">Username</label>#}
+    {#            <input type="email" class="form-control" id="username" placeholder="Enter username">#}
+    {#        </div>#}
+    {#        <div class="form-group">#}
+    {#            <label for="password">Password</label>#}
+    {#            <input type="password" class="form-control" id="password" placeholder="Password">#}
+    {#        </div>#}
+    {##}
+    {#        <button type="submit" class="btn btn-primary">Submit</button>#}
+    {#    </form>#}
+
+
+{% endblock %}
