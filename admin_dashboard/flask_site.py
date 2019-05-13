@@ -2,7 +2,7 @@ from datetime import datetime
 from urllib import request
 import json
 import requests
-from flask import render_template, request, redirect, url_for, flash, Blueprint
+from flask import render_template, request, flash, Blueprint, session
 from wtforms import StringField, PasswordField, Form
 from wtforms.validators import DataRequired
 
@@ -11,8 +11,6 @@ Routes and views for the flask application.
 """
 
 site = Blueprint("site", __name__)
-logged_in = False
-username = ''
 
 
 class LoginForm(Form):
@@ -39,9 +37,9 @@ def login():
         username = request.form['username']
         password = request.form['password']
         if username == 'jaqen' and password == 'hghar':
-            logged_in = True
-            username = username
-            return redirect(url_for('site.dashboard'))
+            session['logged_in'] = True
+            session['username'] = username
+            return dashboard()
         else:
             flash("Error: Invalid login credentials")
 
@@ -56,15 +54,19 @@ def login():
 
 @site.route('/logout')
 def logout():
-    logged_in = False
-    username = ''
-    return redirect(url_for('site.home'))
+    session['logged_in'] = False
+    session['username'] = ''
+    return home()
 
 
 @site.route('/dashboard')
 def dashboard():
     """Renders the dashboard page."""
-    response = requests.get("http://127.0.0.1:5000/books")
+    print('here')
+    try:
+        response = requests.get("http://127.0.0.1:5000/books")
+    except Exception as e:
+        print(e)
     print(response)
     books = json.loads(response.text)
 
