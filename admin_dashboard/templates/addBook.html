@@ -1,19 +1,26 @@
 {% extends "layout.html" %}
-{% block content %}
-    <h2>{{ title }}.</h2>
-    <h3>{{ message }}</h3>
 
-    <div class=container"><br>
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+<div class=container"><br>
         <div class="row align-items-center justify-content-center">
             <div class="col-md-4">
                 <form action="" method="post" role="form">
                     {{ form.csrf }}
                     <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Your username.">
+                        <label for="title">Book Title:</label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Book title">
                         <br>
-                        <label for="password">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter a password.">
+                        <label for="author">Author:</label>
+                        <input type="text" class="form-control" id="author" name="author" placeholder="Author name">
+                        <br>
+                        <label for="isbn">ISBN:</label>
+                        <input type="text" class="form-control" id="isbn" name="isbn" placeholder="ISBN">
+                        <br>
+                        <label for="publishedDate">Published date:</label>
+                        <input type="date" class="form-control" id="publishedDate" name="publishedDate" placeholder="Published date">
                     </div>
                     <br>
                     <button type="submit" class="btn btn-success">Submit</button>
@@ -39,5 +46,4 @@
             <br>
         </div>
     </div>
-
 {% endblock %}

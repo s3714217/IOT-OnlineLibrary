@@ -4,7 +4,43 @@
 
 <h2>{{ title }}.</h2>
 <h3>{{ message }}</h3>
+<a type="button" class="btn btn-primary" href="{{ url_for('site.add_book') }}">Add Book</a>
+<a type="button" class="btn btn-primary" href="/viewStatistics">View Statistics</a>
 
-<p>Use this area to provide additional information.</p>
-
+<table class="table">
+    <thead>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Published Date</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        {% for book in books %}
+            <tr>
+                <td>{{ book.Title }}</td>
+                <td>{{ book.Author }}</td>
+                <td>{{ book.ISBN }}</td>
+                <td>{{ book.PublishedDate }}</td>
+                <td><a type="button" class="btn btn-danger" onclick="deleteBook({{ book.BookID }}, this)">Delete</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+    function deleteBook(id, btn) {
+        console.log(id)
+        $.ajax({
+            url: '/books/'+id,
+            type: 'DELETE',
+            success: function(res) {
+                let row = btn.parentNode.parentNode;
+                row.parentNode.removeChild(row);
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        })
+    }
+</script>
 {% endblock %}

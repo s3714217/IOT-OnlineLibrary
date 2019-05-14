@@ -36,15 +36,16 @@ book_schema = BookSchema()
 book_schema_list = BookSchema(many=True)
 
 
-# Endpoint to show all people.
+# Endpoint to show all books.
 @api.route("/books", methods=["GET"])
 def get_books():
+    print('too')
     books = Book.query.all()
     result = book_schema_list.dump(books)
     return jsonify(result.data)
 
 
-# Endpoint to get person by id.
+# Endpoint to get book by id.
 @api.route("/books/<identifier>", methods=["GET"])
 def get_book(identifier: str):
     book = Book.query.get(identifier)
@@ -55,6 +56,7 @@ def get_book(identifier: str):
 # Endpoint to create a new book.
 @api.route("/books", methods=["POST"])
 def add_book():
+    print(request.json)
     title = request.json["title"]
     isbn = request.json["isbn"]
     author = request.json["author"]

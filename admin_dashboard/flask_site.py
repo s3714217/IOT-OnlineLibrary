@@ -2,8 +2,8 @@ from datetime import datetime
 from urllib import request
 import json
 import requests
-from flask import render_template, request, flash, Blueprint, session
-from wtforms import StringField, PasswordField, Form
+from flask import render_template, request, flash, Blueprint, session, redirect, url_for
+from wtforms import StringField, PasswordField, Form, DateField
 from wtforms.validators import DataRequired
 
 """
@@ -18,8 +18,14 @@ class LoginForm(Form):
     password = PasswordField('Password', validators=[DataRequired()])
 
 
+class BookForm(Form):
+    title = StringField('Title', validators=[DataRequired()])
+    author = StringField('Author', validators=[DataRequired()])
+    isbn = StringField('ISBN', validators=[DataRequired()])
+    publishedDate = DateField('Published Date', validators=[DataRequired()])
+
+
 @site.route('/')
-@site.route('/home')
 def home():
     """Renders the home page."""
     return render_template(
@@ -32,6 +38,9 @@ def home():
 @site.route('/login', methods=['GET', 'POST'])
 def login():
     """Renders the login page."""
+    print(session['logged_in'])
+    if session['logged_in']:
+        return redirect(url_for('site.dashboard'))
     form = LoginForm(request.form)
     if request.method == 'POST':
         username = request.form['username']
@@ -39,7 +48,7 @@ def login():
         if username == 'jaqen' and password == 'hghar':
             session['logged_in'] = True
             session['username'] = username
-            return dashboard()
+            return redirect(url_for('site.dashboard'))
         else:
             flash("Error: Invalid login credentials")
 
@@ -52,6 +61,36 @@ def login():
     )
 
 
+@site.route('/addbook', methods=['GET', 'POST'])
+def add_book():
+    """Adds a book to the database"""
+    form = BookForm(request.form)
+    if request.method == 'POST':
+        title = request.form['title']
+        author = request.form['author']
+        isbn = request.form['isbn']
+        published_date = request.form['publishedDate']
+        book = {"title": title, "author": author, "isbn": isbn, "publishedDate": published_date}
+        print(book)
+        if form.validate():
+            try:
+                requests.post('http://127.0.0.1:5000/books', json=book)
+            except Exception as e:
+                flash("Error: " + str(e))
+                return
+            return redirect(url_for('site.dashboard'))
+        else:
+            flash("Error: Invalid book data")
+
+    return render_template(
+        'addBook.html',
+        title='Add book',
+        form=form,
+        year=datetime.now().year,
+        message='Add a book to the library'
+    )
+
+
 @site.route('/logout')
 def logout():
     session['logged_in'] = False
@@ -59,17 +98,16 @@ def logout():
     return home()
 
 
+@site.route('/home')
 @site.route('/dashboard')
 def dashboard():
     """Renders the dashboard page."""
-    print('here')
     try:
         response = requests.get("http://127.0.0.1:5000/books")
     except Exception as e:
         print(e)
-    print(response)
     books = json.loads(response.text)
-
+    print(books)
     return render_template(
         'dashboard.html',
         title='Dashboard',
