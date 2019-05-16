@@ -11,19 +11,19 @@ ma = Marshmallow()
 
 # Declaring the model.
 class Book(db.Model):
-    __tablename__ = "Book"
-    BookID = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    Title = db.Column(db.Text, nullable=False)
-    ISBN = db.Column(db.Text, nullable=False, unique=True)
-    Author = db.Column(db.Text, nullable=False)
-    PublishedDate = db.Column(db.Date, nullable=False)
+    __tablename__ = "books"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.Text, nullable=False)
+    isbn = db.Column(db.Text, nullable=False, unique=True)
+    author = db.Column(db.Text, nullable=False)
+    published_date = db.Column(db.Date, nullable=False)
 
     def __init__(self, title, isbn, author, published_date, book_id=None):
-        self.Author = author
-        self.Title = title
-        self.ISBN = isbn
-        self.BookID = book_id
-        self.PublishedDate = published_date
+        self.author = author
+        self.title = title
+        self.isbn = isbn
+        self.id = book_id
+        self.published_date = published_date
 
 
 class BookSchema(ma.ModelSchema):

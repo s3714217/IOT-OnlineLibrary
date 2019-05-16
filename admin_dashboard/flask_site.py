@@ -38,8 +38,7 @@ def home():
 @site.route('/login', methods=['GET', 'POST'])
 def login():
     """Renders the login page."""
-    print(session['logged_in'])
-    if session['logged_in']:
+    if 'logged_in' in session and session['logged_in']:
         return redirect(url_for('site.dashboard'))
     form = LoginForm(request.form)
     if request.method == 'POST':
@@ -102,6 +101,8 @@ def logout():
 @site.route('/dashboard')
 def dashboard():
     """Renders the dashboard page."""
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect(url_for('site.home'))
     try:
         response = requests.get("http://127.0.0.1:5000/books")
     except Exception as e:

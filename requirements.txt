@@ -1,4 +1,4 @@
-Flask
+Flask>1
 passlib
 flask-wtf
 wtforms
@@ -8,3 +8,5 @@ marshmallow-sqlalchemy
 requests
 mysqlclient
 python-dateutil
+SQLAlchemy
+tabulate

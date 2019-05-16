@@ -18,11 +18,11 @@
     <tbody>
         {% for book in books %}
             <tr>
-                <td>{{ book.Title }}</td>
-                <td>{{ book.Author }}</td>
-                <td>{{ book.ISBN }}</td>
-                <td>{{ book.PublishedDate }}</td>
-                <td><a type="button" class="btn btn-danger" onclick="deleteBook({{ book.BookID }}, this)">Delete</a></td>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.isbn }}</td>
+                <td>{{ book.published_date }}</td>
+                <td><a type="button" class="btn btn-danger" onclick="deleteBook({{ book.id }}, this)">Delete</a></td>
             </tr>
         {% endfor %}
     </tbody>

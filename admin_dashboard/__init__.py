@@ -13,7 +13,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 HOST = "35.189.7.222"
 USER = "root"
 PASSWORD = "admin@1234"
-DATABASE = "Book"
+DATABASE = "Library"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://{}:{}@{}/{}".format(USER, PASSWORD, HOST, DATABASE)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True

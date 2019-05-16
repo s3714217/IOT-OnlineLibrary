@@ -23,7 +23,9 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('site.dashboard') }}">Home</a></li>
-                    <li><a href="{{ url_for('site.logout') }}">Logout</a></li>
+                    {% if 'logged_in' in session and session['logged_in'] %}
+                        <li><a href="{{ url_for('site.logout') }}">Logout</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
