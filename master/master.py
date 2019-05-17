@@ -11,6 +11,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from tabulate import tabulate
 
+from googleapiclient.discovery import build
+from httplib2 import Http
+from oauth2client import file, client, tools
+
+
 sys.path.append("..")
 import socket_utils
 
@@ -23,7 +28,13 @@ DB_HOST = "35.189.7.222"
 DB_USER = "root"
 DB_PASSWORD = "admin@1234"
 DATABASE = "Library"
-
+SCOPES = 'https://www.googleapis.com/auth/calendar'
+store = file.Storage("token.json")
+credentials = store.get()
+if not credentials or credentials.invalid:
+    flow = client.flow_from_clientsecrets("credentials.json", SCOPES)
+    credentials = tools.run_flow(flow, store)
+service = build("calendar", "v3", http=credentials.authorize(Http()))
 engine = create_engine("mysql://{}:{}@{}/{}".format(DB_USER, DB_PASSWORD, DB_HOST, DATABASE))
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
@@ -43,6 +54,7 @@ class UserBorrowedBooks(Base):
     status = Column(Enum(BookStatuses), nullable=False)
     borrowed_date = Column(Date, nullable=False)
     returned_date = Column(Date, nullable=True)
+    calendar_event_id = Column(String(255), nullable=False)
     borrowed_book = relationship("Book", back_populates="borrowed_users")
     borrowing_user = relationship("LibraryUser", back_populates="books_borrowed")
 
@@ -145,10 +157,14 @@ def menu(user):
                     print("The selected book has been borrowed and is due to be returned on "
                           + str(borrowed_book.borrowed_date + timedelta(days=7)))
                 else:
+                    borrowing_book = session.query(Book).filter(Book.id == book_id).one()
+                    event = add_borrowed_event(borrowing_book, borrowing_user)
                     borrow = UserBorrowedBooks(library_user_id=borrowing_user.id, book_id=int(book_id),
-                                               status=BookStatuses.borrowed, borrowed_date=datetime.today().date())
+                                               status=BookStatuses.borrowed, borrowed_date=datetime.today().date(),
+                                               calendar_event_id=event.get("id"))
                     session.add(borrow)
                     session.commit()
+
                     print("Book successfully borrowed and is due in one week from today")
                 print()
         elif text == "4":
@@ -168,6 +184,8 @@ def menu(user):
                     returning_book.status = BookStatuses.returned
                     returning_book.returned_date = datetime.today().date()
                     session.commit()
+                    print(returning_book.calendar_event_id)
+                    service.events().delete(calendarId='primary', eventId=returning_book.calendar_event_id).execute()
                     print("Book successfully returned")
                 print()
         elif text == "0":
@@ -177,6 +195,42 @@ def menu(user):
         else:
             print("Invalid input, try again.")
             print()
+
+
+def add_borrowed_event(book, user):
+    week_from_now = datetime.today().date() + timedelta(7)
+    time_start = "{}T00:00:00+10:00".format(week_from_now)
+    time_end = "{}T12:00:00+10:00".format(week_from_now)
+    event = {
+        "summary": "Library book return reminder event",
+        "location": "Library",
+        "description": "Return {} by {} to the library".format(book.title, book.author),
+        "start": {
+            "dateTime": time_start,
+            "timeZone": "Australia/Melbourne",
+        },
+        "end": {
+            "dateTime": time_end,
+            "timeZone": "Australia/Melbourne",
+        },
+        "attendees": [
+            {
+                "email": user.email,
+                "displayName": user.first_name + " " + user.last_name
+            }
+        ],
+        "reminders": {
+            "useDefault": False,
+            "overrides": [
+                {"method": "email", "minutes": 24*60},
+                {"method": "popup", "minutes": 24*60}
+            ],
+        }
+    }
+    event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+    print('Event added to your calendar: %s' % event.get('htmlLink'))
+    print(event)
+    return event
 
 
 # Execute program.
