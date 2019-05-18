@@ -103,12 +103,8 @@ def dashboard():
     """Renders the dashboard page."""
     if 'logged_in' not in session or not session['logged_in']:
         return redirect(url_for('site.home'))
-    try:
-        response = requests.get("http://127.0.0.1:5000/books")
-    except Exception as e:
-        print(e)
+    response = requests.get("http://127.0.0.1:5000/books")
     books = json.loads(response.text)
-    print(books)
     return render_template(
         'dashboard.html',
         title='Dashboard',
