@@ -1,3 +1,4 @@
+# !/usr/bin/env python3
 """
 This script runs the admin_dashboard application using a development server.
 """

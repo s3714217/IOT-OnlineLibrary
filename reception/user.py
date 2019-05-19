@@ -1,7 +1,7 @@
 import operator
 import re
 from passlib.hash import sha256_crypt
-from dbContext import DbContext
+from db_context import DbContext
 from sqlite3 import Error
 import socket
 import json
@@ -83,14 +83,13 @@ class User:
         except Error:
             raise Exception("The username exists and cannot be created")
 
-    def login(self, username: str, password: str, address) -> bool:
+    def login(self, username: str, address, face_login: bool = False, password: str = "") -> bool:
         self.username = username
         try:
             users = self.DBCONTEXT.query_from_table(self.GET_USER_SQL, (self.username,))
-            print(users[0][0])
             if len(users) == 0:
                 return False
-            if not sha256_crypt.verify(password, users[0][1]):
+            if not sha256_crypt.verify(password, users[0][1]) and not face_login:
                 return False
             self.first_name = users[0][2]
             self.email = users[0][4]

@@ -1,6 +1,9 @@
 # !/usr/bin/env python3
 import json
 from user import User
+from facial_recognition import FacialRecognition
+import _thread
+
 
 with open("config.json", "r") as file:
     data = json.load(file)
@@ -9,6 +12,8 @@ HOST = data["master_pi_ip"]  # The server's hostname or IP address.
 PORT = 63000  # The port used by the server.
 ADDRESS = (HOST, PORT)
 user = User()
+facial_login = FacialRecognition(data["encodings"], data["classifier"], data["dataset"],
+                                 data["detection_method"], data["resolution"], data["output"], data["display"])
 
 
 def main():
@@ -28,6 +33,10 @@ def main():
             first_name = input("First name:")
             last_name = input("Last name:")
             email = input("Email:")
+            facial_recognition = input("Do you want to use face login. press [y]:yes or [n]:no:")
+            if facial_recognition == "y" or facial_recognition == "yes":
+                facial_login.capture(username)
+                _thread.start_new_thread(facial_login.capture)
             try:
                 user.register(username, password, first_name, last_name, email)
             except Exception as e:
@@ -37,7 +46,7 @@ def main():
             username = input("Username:")
             password = input("Password:")
             try:
-                login = user.login(username, password, ADDRESS)
+                login = user.login(username, ADDRESS, password=password)
                 if not login:
                     print('Invalid login credentials')
             except Exception as e:
@@ -45,7 +54,12 @@ def main():
             print('success')
         elif text == "3":
             print("Please stand in front of the camera..")
-            print()
+            username = facial_login.recognise()
+            if username != "":
+                login = user.login(username, ADDRESS, face_login=True)
+                if not login:
+                    print('Invalid login credentials')
+                print()
         elif text == "0":
             print("Goodbye.")
             print()
