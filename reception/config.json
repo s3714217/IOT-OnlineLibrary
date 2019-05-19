@@ -1,10 +1,10 @@
 {
-    "master_pi_ip": "localhost",
+    "master_pi_ip": "192.168.0.3",
     "encodings": "encodings.pickle",
     "classifier": "haarcascade_frontalface_default.xml",
     "dataset": "./dataset",
     "detection_method": "hog",
     "resolution": "240",
     "output": "",
-    "display": 1
+    "display": 0
 }

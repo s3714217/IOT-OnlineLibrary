@@ -36,7 +36,7 @@ def main():
             facial_recognition = input("Do you want to use face login. press [y]:yes or [n]:no:")
             if facial_recognition == "y" or facial_recognition == "yes":
                 facial_login.capture(username)
-                _thread.start_new_thread(facial_login.capture)
+                _thread.start_new_thread(facial_login.encode, ())
             try:
                 user.register(username, password, first_name, last_name, email)
             except Exception as e:

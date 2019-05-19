@@ -19,7 +19,7 @@ class FacialRecognition:
         self.classifier = classifier
         self.dataset = dataset
         self.detection_method = detection_method
-        self.resolution = resolution
+        self.resolution = int(resolution)
         self.output = output
         self.display = display
 
@@ -169,6 +169,10 @@ class FacialRecognition:
 
             # loop over the recognized faces
             for ((_, _, _, _), name) in zip(boxes, names):
+                cv2.destroyAllWindows()
+                vs.stop()
+                if writer is not None:
+                    writer.release()
                 return name
 
             # if the video writer is None *AND* we are supposed to write
