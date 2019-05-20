@@ -7,11 +7,13 @@ class DbContext:
                              ' first_name TEXT NOT NULL, last_name TEXT NOT NULL, email TEXT NOT NULL);'
 
     def __init__(self, database_name):
+        """Initializing user database"""
         self.databaseName = database_name
         self.connection = self.create_connection()
         self.create_table(DbContext.sql_create_users_table)
 
     def create_connection(self):
+        """"Creating connection to database"""
         try:
             conn = sqlite3.connect(self.databaseName, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
             return conn
@@ -20,17 +22,20 @@ class DbContext:
         return None
 
     def insert_into_table(self, table_sql, values):
+        """"Insert value to database"""
         cur = self.connection.cursor()
         cur.execute(table_sql, values)
         self.connection.commit()
         return
 
     def query_from_table(self, table_sql, values):
+        """Query command"""
         cur = self.connection.cursor()
         cur.execute(table_sql, values)
         return cur.fetchall()
 
     def create_table(self, create_table_sql):
+        """Create table"""
         try:
             c = self.connection.cursor()
             c.execute(create_table_sql)
