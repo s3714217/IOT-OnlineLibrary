@@ -15,6 +15,7 @@ import cv2
 class FacialRecognition:
 
     def __init__(self, encodings, classifier, dataset, detection_method, resolution, output, display):
+        """Initializing Facial Regconition"""
         self.encodings = encodings
         self.classifier = classifier
         self.dataset = dataset
@@ -24,6 +25,7 @@ class FacialRecognition:
         self.display = display
 
     def capture(self, username):
+        """Capture facial image"""
         folder = '{}/{}'.format(self.dataset, username)
         if not os.path.exists(folder):
             os.makedirs(folder)
@@ -64,6 +66,7 @@ class FacialRecognition:
         cv2.destroyAllWindows()
 
     def encode(self):
+        """Encode facial image"""
         # grab the paths to the input images in our dataset
         print("[INFO] quantifying faces...")
         image_paths = list(paths.list_images(self.dataset))
@@ -107,6 +110,7 @@ class FacialRecognition:
         f.close()
 
     def recognise(self):
+        """Recognizing known face"""
         # load the known faces and embeddings
         print("[INFO] loading encodings...")
         data = pickle.loads(open(self.encodings, "rb").read())
