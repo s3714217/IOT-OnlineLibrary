@@ -84,9 +84,7 @@ class LibraryUser(Base):
 
 def main():
     Base.metadata.create_all(engine)
-    # user = {"_username": "jamirineni", "_first_name": "jaya", "_last_name": "amirineni", "_email": "jayasai.amerineni@gmail.com"}
     while True:
-        # menu(user)
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind(ADDRESS)
             s.listen()
