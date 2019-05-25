@@ -5,7 +5,7 @@
 <h2>{{ title }}.</h2>
 <h3>{{ message }}</h3>
 <a type="button" class="btn btn-primary" href="{{ url_for('site.add_book') }}">Add Book</a>
-<a type="button" class="btn btn-primary" href="/viewStatistics">View Statistics</a>
+<a type="button" class="btn btn-primary" href="{{ url_for('site.view_statistics') }}">View Statistics</a>
 
 <table class="table">
     <thead>

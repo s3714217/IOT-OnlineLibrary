@@ -112,3 +112,13 @@ def dashboard():
         message='Manage the library',
         books=books
     )
+
+
+@site.route('/statistics')
+def view_statistics():
+    """Renders the book lending statistics by week-wise and day-wise"""
+    return render_template(
+        'statistics.html',
+        title='Statistics',
+        year=datetime.now().year
+    )
